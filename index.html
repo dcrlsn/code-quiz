@@ -18,6 +18,9 @@
 
 <body>
   <main>
+    <aside id="timer">
+      <h2></h2>
+    </aside>
     <section class="card" id="title">
       <h1>
         Welcome to the Code Quiz
@@ -39,13 +42,23 @@
       </div>
     </section>
     <section class="card" id="quiz">
-      <h2>
-      </h2>
+      <h2></h2>
       <div>
-        <button data-id="a" id="a">test</button>
-        <button data-id="b" id="b">test</button>
-        <button data-id="c" id="c">test</button>
-        <button data-id="d" id="d">test</button>
+        <button data-id="a" id="a"></button>
+        <button data-id="b" id="b"></button>
+        <button data-id="c" id="c"></button>
+        <button data-id="d" id="d"></button>
+      </div>
+    </section>
+    <section class="card" id="score">
+      <h2></h2>
+      <h1></h1>
+      <div>
+        <form>
+          <label for="initials">Please Enter your Initials</label>
+          <input name="initials" maxlength="5" placeholder="Type Here">
+          <button>Submit</button>
+        </form>
       </div>
     </section>
   </main>
