@@ -23,7 +23,7 @@
     </aside>
     <section class="card" id="title">
       <h1>
-        Welcome to the Code Quiz
+        Code Quiz
       </h1>
       <div>
         <button id="start">Start the Quiz</button>
@@ -34,11 +34,17 @@
       <h1>
         High Scores
       </h1>
-      <ul>
-        <li>DJC</li>
-      </ul>
       <div>
-        <button id="goback">Go Back</button>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+      <div>
+        <button class="goback">Go Back</button>
       </div>
     </section>
     <section class="card" id="quiz">
@@ -56,8 +62,9 @@
       <div>
         <form>
           <label for="initials">Please Enter your Initials</label>
-          <input name="initials" maxlength="5" placeholder="Type Here">
-          <button>Submit</button>
+          <input id="initials-input" name=" initials" minlength="1" maxlength="5" placeholder="Type Here">
+          <button id="submit-btn">Submit</button>
+          <button class="goback">Go Back without Saving</button>
         </form>
       </div>
     </section>

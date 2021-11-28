@@ -5,7 +5,7 @@ var scoreCard = document.querySelector("#score");
 
 var startQuizBtn = document.querySelector("#start");
 var lbBtn = document.querySelector("#highscore");
-var goBackBtn = document.querySelector("#goback");
+var goBackBtn = document.querySelector(".goback");
 var timer = document.querySelector("#timer h2");
 var scoreTitle = document.querySelector("#score h2");
 var scoreAmt = document.querySelector("#score h1");
@@ -13,46 +13,59 @@ var scoreAmt = document.querySelector("#score h1");
 var quizQues = document.querySelector("#quiz h2");
 var quizBtn = document.querySelectorAll("#quiz button");
 
+var submitBtn = document.querySelector("#submit-btn");
+var liEl = document.querySelectorAll("li");
+
 var quizObject = [
   {
-    question: "AAAAAAAAAA",
+    question: "Which of these is not a data type?",
     answers: [
-      "one",
+      "boolean",
       "two",
-      "three",
-      "four"
+      "string",
+      "undefined"
     ],
     correct: "b"
   },
   {
-    question: "BBBBB",
+    question: "[1, 2, 3] is an example of a (an)",
     answers: [
-      "one",
-      "two",
-      "three",
-      "four"
+      "string",
+      "function",
+      "array",
+      "promise"
     ],
     correct: "c"
   },
   {
-    question: "CCCC",
+    question: "A javascript file has the extension",
     answers: [
-      "one",
-      "two",
-      "three",
-      "four"
+      ".java",
+      ".html",
+      ".xml",
+      ".js"
     ],
     correct: "d"
   },
   {
-    question: "AAAAAADDADDDAAA",
+    question: 'What does "undefined + 5" equal',
     answers: [
-      "one",
-      "two",
-      "three",
-      "four"
+      "NaN",
+      "undefined",
+      "5",
+      "'undefined5'"
     ],
     correct: "a"
+  },
+  {
+    question: "What is node.js?",
+    answers: [
+      "a function",
+      "a javascript back-end",
+      "a javascript front-end",
+      "a variable"
+    ],
+    correct: "b"
   }
 ];
 
@@ -69,7 +82,7 @@ function showTitle() {
   quizCard.setAttribute("style", "display: none;");
   timer.setAttribute("style", "display: none;");
   scoreCard.setAttribute("style", "display: none;");
-}
+};
 
 function showLb() {
   titleCard.setAttribute("style", "display: none;");
@@ -78,7 +91,7 @@ function showLb() {
   timer.setAttribute("style", "display: none;");
   scoreCard.setAttribute("style", "display:none;");
   populateLb();
-}
+};
 
 function showScore() {
   titleCard.setAttribute("style", "display: none;");
@@ -88,7 +101,7 @@ function showScore() {
   scoreCard.setAttribute("style", "display: block;");
   scoreTitle.textContent = "Congratulations! You scored"
   scoreAmt.textContent = `${score} points!`
-}
+};
 
 function showQuiz() {
   titleCard.setAttribute("style", "display: none;");
@@ -99,7 +112,7 @@ function showQuiz() {
   timer.textContent = `${timeLeft} seconds remaining.`;
   curQuizObject = [...quizObject];
   quizText()
-}
+};
 
 function setTime() {
   var interval = setInterval(function () {
@@ -114,15 +127,15 @@ function setTime() {
       clearInterval(interval);
       showScore();
       timeLeft = 30;
-    }
+    };
 
     if (curQuizObject.length === 0 && quizCard.getAttribute("style") === "display: none;") {
       clearInterval(interval);
       timeLeft = 30;
-    }
+    };
 
   }, 1000)
-}
+};
 
 function quizText() {
   var x = (Math.floor(Math.random() * curQuizObject.length));
@@ -132,7 +145,7 @@ function quizText() {
     quizBtn[i].textContent = answer;
   }
   removed = curQuizObject.splice(x, 1);
-}
+};
 
 function quizScore() {
   console.log(this);
@@ -140,29 +153,39 @@ function quizScore() {
   if (curQuizObject.length > 0) {
     quizText();
   } else showScore();
-}
+};
 
 function saveScore() {
-  var highScores = JSON.parse(localstorage.getItem("highScores")) || [];
+  var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+  var initials = document.querySelector("#initials-input")
   var highScore = {
     initials: initials.value,
     score: score
   };
+  highScores.push(highScore);
   localStorage.setItem("highScores", JSON.stringify(highScores));
-}
-
-function sortScores() {
-
-}
+  initials.value = ""
+  score = 0
+};
 
 function populateLb() {
-  var highScores = JSON.parse(localstorage.getItem("highScores")) || [];
-}
+  var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+  highScores.sort((a, b) => parseInt(b.score) - parseInt(a.score));
+  if (highScores.length > 5) {
+    highScores.sort((a, b) => parseInt(b.score) - parseInt(a.score));
+    highScores.length = 5
+    localStorage.clear();
+    localStorage.setItem("highScores", JSON.stringify(highScores))
+  } else localStorage.setItem("highScores", JSON.stringify(highScores));
+  for (i = 0; i < highScores.length; i++) {
+    liEl[i].textContent = `${highScores[i].initials} - ${highScores[i].score}`
+  }
+};
 
 function startQuiz() {
   showQuiz();
   setTime();
-}
+};
 
 //Event Listeners
 startQuizBtn.addEventListener("click", startQuiz);
@@ -172,7 +195,10 @@ for (i = 0; i < quizBtn.length; i++) {
   quizBtn[i].addEventListener("click", quizScore);
 }
 submitBtn.addEventListener("click", function (event) {
+  var initials = document.querySelector("#initials-input")
   event.preventDefault();
-  saveScore();
-  showLb();
+  if (initials.value) {
+    saveScore();
+    showLb();
+  }
 });
