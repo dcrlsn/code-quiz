@@ -61,6 +61,8 @@ var removed = [];
 var score = 0;
 var timeLeft = 30;
 
+
+
 function showTitle() {
   titleCard.setAttribute("style", "display: block;");
   lbCard.setAttribute("style", "display: none;");
@@ -75,6 +77,7 @@ function showLb() {
   quizCard.setAttribute("style", "display: none;");
   timer.setAttribute("style", "display: none;");
   scoreCard.setAttribute("style", "display:none;");
+  populateLb();
 }
 
 function showScore() {
@@ -139,15 +142,37 @@ function quizScore() {
   } else showScore();
 }
 
+function saveScore() {
+  var highScores = JSON.parse(localstorage.getItem("highScores")) || [];
+  var highScore = {
+    initials: initials.value,
+    score: score
+  };
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+}
+
+function sortScores() {
+
+}
+
+function populateLb() {
+  var highScores = JSON.parse(localstorage.getItem("highScores")) || [];
+}
+
 function startQuiz() {
   showQuiz();
   setTime();
 }
 
 //Event Listeners
-startQuizBtn.addEventListener("click", startQuiz)
-lbBtn.addEventListener("click", showLb)
-goBackBtn.addEventListener("click", showTitle)
+startQuizBtn.addEventListener("click", startQuiz);
+lbBtn.addEventListener("click", showLb);
+goBackBtn.addEventListener("click", showTitle);
 for (i = 0; i < quizBtn.length; i++) {
   quizBtn[i].addEventListener("click", quizScore);
 }
+submitBtn.addEventListener("click", function (event) {
+  event.preventDefault();
+  saveScore();
+  showLb();
+});
