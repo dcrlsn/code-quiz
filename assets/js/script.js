@@ -1,21 +1,22 @@
+//card variables
 var titleCard = document.querySelector("#title");
 var lbCard = document.querySelector("#leaderboard");
 var quizCard = document.querySelector("#quiz");
 var scoreCard = document.querySelector("#score");
 
+//card element variables
 var startQuizBtn = document.querySelector("#start");
 var lbBtn = document.querySelector("#highscore");
 var goBackBtn = document.querySelector(".goback");
 var timer = document.querySelector("#timer h2");
 var scoreTitle = document.querySelector("#score h2");
 var scoreAmt = document.querySelector("#score h1");
-
 var quizQues = document.querySelector("#quiz h2");
 var quizBtn = document.querySelectorAll("#quiz button");
-
 var submitBtn = document.querySelector("#submit-btn");
 var liEl = document.querySelectorAll("li");
 
+//quiz questions and answers
 var quizObject = [
   {
     question: "Which of these is not a data type?",
@@ -69,51 +70,48 @@ var quizObject = [
   }
 ];
 
+//variables for functions
 var curQuizObject = [];
 var removed = [];
 var score = 0;
 var timeLeft = 30;
 
 
+//state management for cards
+
+function display(state) {
+  titleCard.style.display = "none";
+  lbCard.style.display = "none";
+  quizCard.style.display = "none";
+  timer.style.display = "none";
+  scoreCard.style.display = "none";
+  switch (state) {
+    case "title": return titleCard.style.display = "block";
+    case "lb": return lbCard.style.display = "block";
+    case "score": return scoreCard.style.display = "block";
+    case "quiz": return quizCard.style.display = "block";
+    default: return titleCard.style.display = "block";
+  }
+};
 
 function showTitle() {
-  titleCard.setAttribute("style", "display: block;");
-  lbCard.setAttribute("style", "display: none;");
-  quizCard.setAttribute("style", "display: none;");
-  timer.setAttribute("style", "display: none;");
-  scoreCard.setAttribute("style", "display: none;");
+  display("title");
 };
 
 function showLb() {
-  titleCard.setAttribute("style", "display: none;");
-  lbCard.setAttribute("style", "display: block;");
-  quizCard.setAttribute("style", "display: none;");
-  timer.setAttribute("style", "display: none;");
-  scoreCard.setAttribute("style", "display:none;");
+  display("lb");
   populateLb();
 };
 
-function showScore() {
-  titleCard.setAttribute("style", "display: none;");
-  lbCard.setAttribute("style", "display: none;");
-  quizCard.setAttribute("style", "display: none;");
-  timer.setAttribute("style", "display: none;");
-  scoreCard.setAttribute("style", "display: block;");
-  scoreTitle.textContent = "Congratulations! You scored"
-  scoreAmt.textContent = `${score} points!`
-};
-
 function showQuiz() {
-  titleCard.setAttribute("style", "display: none;");
-  lbCard.setAttribute("style", "display: none;");
-  quizCard.setAttribute("style", "display: block;");
-  timer.setAttribute("style", "display:block;");
-  scoreCard.setAttribute("style", "display:none;");
+  display("quiz");
   timer.textContent = `${timeLeft} seconds remaining.`;
   curQuizObject = [...quizObject];
-  quizText()
+  quizText();
+  setTime();
 };
 
+//timer function, ends quiz when it hits 0.
 function setTime() {
   var interval = setInterval(function () {
     timeLeft--;
@@ -125,11 +123,13 @@ function setTime() {
 
     if (timeLeft === 0) {
       clearInterval(interval);
-      showScore();
+      display("score");
+      scoreTitle.textContent = "Congratulations! You scored";
+      scoreAmt.textContent = `${score} points!`;
       timeLeft = 30;
     };
 
-    if (curQuizObject.length === 0 && quizCard.getAttribute("style") === "display: none;") {
+    if (curQuizObject.length <= 0 && quizCard.getAttribute("style") === "display: none;") {
       clearInterval(interval);
       timeLeft = 30;
     };
@@ -137,6 +137,7 @@ function setTime() {
   }, 1000)
 };
 
+//selects random quiz question then removes it from cloned array
 function quizText() {
   var x = (Math.floor(Math.random() * curQuizObject.length));
   quizQues.textContent = curQuizObject[x].question;
@@ -147,14 +148,19 @@ function quizText() {
   removed = curQuizObject.splice(x, 1);
 };
 
+//checks if the correct answer was clicked then adds points based on time left on quiz or subtracts time.
 function quizScore() {
-  console.log(this);
   if (this.dataset.id == removed[0].correct) { score = score + Math.floor(timeLeft * .5); } else { timeLeft = timeLeft - 5; };
   if (curQuizObject.length > 0) {
     quizText();
-  } else showScore();
+  } else {
+    display("score");
+    scoreTitle.textContent = "Congratulations! You scored";
+    scoreAmt.textContent = `${score} points!`
+  };
 };
 
+//saves high score to local storage and resets values if quiz is retaken
 function saveScore() {
   var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
   var initials = document.querySelector("#initials-input")
@@ -168,6 +174,7 @@ function saveScore() {
   score = 0
 };
 
+//renders top 5 scores to leaderboard in descending order, drops any score outside of the top 5.
 function populateLb() {
   var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
   highScores.sort((a, b) => parseInt(b.score) - parseInt(a.score));
@@ -182,13 +189,8 @@ function populateLb() {
   }
 };
 
-function startQuiz() {
-  showQuiz();
-  setTime();
-};
-
 //Event Listeners
-startQuizBtn.addEventListener("click", startQuiz);
+startQuizBtn.addEventListener("click", showQuiz);
 lbBtn.addEventListener("click", showLb);
 goBackBtn.addEventListener("click", showTitle);
 for (i = 0; i < quizBtn.length; i++) {
