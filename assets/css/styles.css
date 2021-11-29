@@ -106,7 +106,6 @@ main {
   width: 200px;
   margin-bottom: 8px;
   padding-top: 8px;
-  border-top: 1px solid #33333355;
 }
 
 .card div ul li:nth-of-type(1) {
