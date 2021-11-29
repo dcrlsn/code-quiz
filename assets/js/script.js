@@ -89,7 +89,11 @@ function display(state) {
     case "title": return titleCard.style.display = "block";
     case "lb": return lbCard.style.display = "block";
     case "score": return scoreCard.style.display = "block";
-    case "quiz": return quizCard.style.display = "block";
+    case "quiz": {
+      quizCard.style.display = "block";
+      timer.style.display = "block";
+      return;
+    }
     default: return titleCard.style.display = "block";
   }
 };
